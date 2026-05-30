@@ -1,1 +1,30 @@
+@startuml
+title MedAccess. Структура интерфейса
 
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+
+package "MedAccess" {
+  [Главная] as Home
+  [Панель персонализации] as Personalization
+  [Выбор врача] as DoctorSelection
+  [Выбор даты и времени] as SlotSelection
+  [Данные пациента] as PatientData
+  [Подтверждение записи] as Confirmation
+}
+
+Home --> Personalization : настроить отображение
+Home --> DoctorSelection : начать запись
+
+Personalization --> Home : применить настройки
+Personalization --> DoctorSelection : продолжить запись
+
+DoctorSelection --> SlotSelection : выбрать врача
+SlotSelection --> PatientData : выбрать дату и время
+PatientData --> Confirmation : отправить корректную форму
+
+PatientData --> PatientData : исправить ошибки формы
+Confirmation --> Home : вернуться на главную
+
+@enduml

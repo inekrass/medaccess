@@ -1,1 +1,61 @@
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
+.accessibility-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.accessibility-toggle-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.accessibility-panel {
+  border-bottom: 1px solid #1f2937;
+  background: #ffffff;
+}
+
+.accessibility-panel .container {
+  padding-block: 1rem;
+}
+
+.accessibility-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.accessibility-form fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.accessibility-form legend {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.accessibility-form label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-right: 0.5rem;
+}
+
+.focus-note {
+  margin: 0;
+}

@@ -9,6 +9,69 @@
   <body>
     <a class="skip-link" href="#main-content">Перейти к основному содержанию</a>
 
+    <aside
+      id="accessibility-panel"
+      class="accessibility-panel"
+      aria-labelledby="accessibility-panel-title"
+      hidden
+    >
+      <div class="container">
+        <h2 id="accessibility-panel-title">Настройки отображения</h2>
+
+        <form class="accessibility-form" aria-label="Настройки отображения сайта">
+          <fieldset>
+            <legend>Размер шрифта</legend>
+            <label>
+              <input type="radio" name="font-size" value="normal" checked>
+              Обычный
+            </label>
+            <label>
+              <input type="radio" name="font-size" value="large">
+              Крупный
+            </label>
+            <label>
+              <input type="radio" name="font-size" value="extra-large">
+              Очень крупный
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Межбуквенный интервал</legend>
+            <label>
+              <input type="radio" name="letter-spacing" value="normal" checked>
+              Обычный
+            </label>
+            <label>
+              <input type="radio" name="letter-spacing" value="increased">
+              Увеличенный
+            </label>
+            <label>
+              <input type="radio" name="letter-spacing" value="large">
+              Большой
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Межстрочный интервал</legend>
+            <label>
+              <input type="radio" name="line-height" value="normal" checked>
+              Обычный
+            </label>
+            <label>
+              <input type="radio" name="line-height" value="increased">
+              Увеличенный
+            </label>
+            <label>
+              <input type="radio" name="line-height" value="large">
+              Большой
+            </label>
+          </fieldset>
+
+          <p class="focus-note">Подсветка фокуса всегда включена.</p>
+        </form>
+      </div>
+    </aside>
+
     <header class="site-header">
       <div class="container">
         <p class="site-name">MedAccess</p>
@@ -20,6 +83,27 @@
             <li><a href="#appointment-start">Запись к врачу</a></li>
           </ul>
         </nav>
+
+        <button
+          type="button"
+          class="accessibility-toggle"
+          aria-controls="accessibility-panel"
+          aria-expanded="false"
+          aria-label="Открыть настройки отображения"
+        >
+          <svg
+            class="accessibility-toggle-icon"
+            width="32"
+            height="18"
+            viewBox="0 0 32 18"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="9" cy="9" r="6"></circle>
+            <circle cx="23" cy="9" r="6"></circle>
+            <path d="M15 9h2"></path>
+          </svg>
+        </button>
       </div>
     </header>
 

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MedAccess — запись к врачу</title>
+    <title>Выбор врача — MedAccess</title>
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
@@ -79,8 +79,8 @@
 
         <nav class="main-nav" aria-label="Основная навигация">
           <ul>
-            <li><a href="#home" aria-current="page">Главная</a></li>
-            <li><a href="doctors.html">Запись к врачу</a></li>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="doctors.html" aria-current="page">Запись к врачу</a></li>
           </ul>
         </nav>
 
@@ -108,60 +108,45 @@
     </header>
 
     <main id="main-content" class="site-main">
-      <section id="home" class="screen screen-home" aria-labelledby="home-title">
+      <section class="screen doctors-screen" aria-labelledby="doctors-title">
         <div class="container">
-          <h1 id="home-title">Запишитесь к врачу онлайн</h1>
+          <h1 id="doctors-title">Выберите врача и время приема</h1>
           <p class="lead">
-            MedAccess — это сайт для быстрой и понятной записи на прием в поликлинику.
-            Вы можете выбрать нужную специальность врача, удобное время и отправить данные
-            для записи без звонка в регистратуру.
+            Найдите нужную специальность, выберите врача и подходящее время приема.
           </p>
 
-          <div class="home-actions" id="appointment-start">
-            <a class="button-link" href="doctors.html">Записаться к врачу</a>
-            <a class="secondary-link" href="#accessibility-summary">Что учтено для доступности</a>
-          </div>
+          <form class="doctor-filter" aria-labelledby="doctor-filter-title">
+            <h2 id="doctor-filter-title">Фильтр по специальности</h2>
+            <label for="specialty-filter">Специальность врача</label>
+            <select id="specialty-filter" name="specialty">
+              <option value="">Все специальности</option>
+            </select>
+          </form>
+
+          <section class="doctors-list" aria-labelledby="available-doctors-title">
+            <h2 id="available-doctors-title">Доступные врачи</h2>
+            <div id="doctors-list" aria-live="polite"></div>
+          </section>
+
+          <div
+            id="live-region"
+            class="visually-hidden"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
         </div>
       </section>
-
-      <section
-        id="accessibility-summary"
-        class="screen screen-summary"
-        aria-labelledby="accessibility-summary-title"
-      >
-        <div class="container">
-          <h2 id="accessibility-summary-title">Сайт удобно использовать разным людям</h2>
-          <p>
-            Интерфейс MedAccess разработан так, чтобы запись к врачу была понятной
-            для пожилых пользователей, слабовидящих людей и тех, кто пользуется сайтом
-            только с клавиатуры.
-          </p>
-          <ul class="feature-list">
-            <li>Кнопки и ссылки имеют понятные названия.</li>
-            <li>Основные действия доступны с клавиатуры.</li>
-            <li>Фокус на элементах управления хорошо заметен.</li>
-            <li>Ошибки в форме объясняются текстом.</li>
-            <li>Размер текста и интервалы можно будет настроить под себя.</li>
-          </ul>
-        </div>
-      </section>
-
-      <div
-        id="live-region"
-        class="visually-hidden"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      ></div>
     </main>
 
     <footer class="site-footer">
       <div class="container">
         <p>MedAccess — доступная онлайн-запись к врачу.</p>
-        <a href="#home">Вернуться к началу страницы</a>
+        <a href="#main-content">Вернуться к началу страницы</a>
       </div>
     </footer>
 
+    <script src="js/mock-data.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

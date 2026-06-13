@@ -3,6 +3,8 @@ const accessibilityPanel = document.querySelector("#accessibility-panel");
 const liveRegion = document.querySelector("#live-region");
 const doctorsList = document.querySelector("#doctors-list");
 const specialtyFilter = document.querySelector("#specialty-filter");
+const appointmentSummary = document.querySelector("#appointment-summary");
+const appointmentStorageKey = "medaccessAppointment";
 
 function setLiveMessage(message) {
   if (!liveRegion) {
@@ -99,6 +101,7 @@ function createDoctorCard(doctor) {
   slots.className = "appointment-slots";
   continueButton.type = "button";
   continueButton.textContent = "Продолжить запись";
+  continueButton.disabled = true;
 
   title.textContent = doctor.name;
   content.append(
@@ -120,8 +123,35 @@ function createDoctorCard(doctor) {
     input.name = `doctor-${doctor.id}-slot`;
     input.value = slot;
 
+    input.addEventListener("change", () => {
+      continueButton.disabled = false;
+      continueButton.dataset.doctorId = String(doctor.id);
+      continueButton.dataset.slot = slot;
+      setLiveMessage(`Выбрано время приема: ${formatSlot(slot)}.`);
+    });
+
     label.append(input, ` ${formatSlot(slot)}`);
     slotsFieldset.append(label);
+  });
+
+  continueButton.addEventListener("click", () => {
+    const selectedSlot = continueButton.dataset.slot;
+
+    if (!selectedSlot) {
+      setLiveMessage("Выберите время приема перед продолжением записи.");
+      return;
+    }
+
+    sessionStorage.setItem(appointmentStorageKey, JSON.stringify({
+      doctorId: doctor.id,
+      doctorName: doctor.name,
+      specialty: doctor.specialty,
+      experience: doctor.experience,
+      room: doctor.room,
+      slot: selectedSlot
+    }));
+
+    window.location.href = "appointment.html";
   });
 
   slots.append(slotsSummary, slotsFieldset, continueButton);
@@ -194,3 +224,56 @@ function initDoctorsPage() {
 }
 
 initDoctorsPage();
+
+function renderAppointmentSummary() {
+  if (!appointmentSummary) {
+    return;
+  }
+
+  const savedAppointment = sessionStorage.getItem(appointmentStorageKey);
+
+  appointmentSummary.innerHTML = "";
+
+  if (!savedAppointment) {
+    const message = document.createElement("p");
+    const link = document.createElement("a");
+
+    message.textContent = "Выберите врача и время приема на странице записи.";
+    link.href = "doctors.html";
+    link.textContent = "Перейти к выбору врача";
+    appointmentSummary.append(message, link);
+    setLiveMessage("Врач и время приема пока не выбраны.");
+    return;
+  }
+
+  let appointment;
+
+  try {
+    appointment = JSON.parse(savedAppointment);
+  } catch {
+    sessionStorage.removeItem(appointmentStorageKey);
+    renderAppointmentSummary();
+    return;
+  }
+  const list = document.createElement("dl");
+
+  [
+    ["Врач", appointment.doctorName],
+    ["Специальность", appointment.specialty],
+    ["Стаж", appointment.experience],
+    ["Кабинет", appointment.room],
+    ["Дата и время", formatSlot(appointment.slot)]
+  ].forEach(([termText, descriptionText]) => {
+    const term = document.createElement("dt");
+    const description = document.createElement("dd");
+
+    term.textContent = termText;
+    description.textContent = descriptionText;
+    list.append(term, description);
+  });
+
+  appointmentSummary.append(list);
+  setLiveMessage(`Выбрана запись к врачу ${appointment.doctorName} на ${formatSlot(appointment.slot)}.`);
+}
+
+renderAppointmentSummary();

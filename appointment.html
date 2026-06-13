@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Оформление записи — MedAccess</title>
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Перейти к основному содержанию</a>
+
+    <aside
+      id="accessibility-panel"
+      class="accessibility-panel"
+      aria-labelledby="accessibility-panel-title"
+      hidden
+    >
+      <div class="container">
+        <h2 id="accessibility-panel-title">Настройки отображения</h2>
+
+        <form class="accessibility-form" aria-label="Настройки отображения сайта">
+          <fieldset>
+            <legend>Размер шрифта</legend>
+            <label>
+              <input type="radio" name="font-size" value="normal" checked>
+              Обычный
+            </label>
+            <label>
+              <input type="radio" name="font-size" value="large">
+              Крупный
+            </label>
+            <label>
+              <input type="radio" name="font-size" value="extra-large">
+              Очень крупный
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Межбуквенный интервал</legend>
+            <label>
+              <input type="radio" name="letter-spacing" value="normal" checked>
+              Обычный
+            </label>
+            <label>
+              <input type="radio" name="letter-spacing" value="increased">
+              Увеличенный
+            </label>
+            <label>
+              <input type="radio" name="letter-spacing" value="large">
+              Большой
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Межстрочный интервал</legend>
+            <label>
+              <input type="radio" name="line-height" value="normal" checked>
+              Обычный
+            </label>
+            <label>
+              <input type="radio" name="line-height" value="increased">
+              Увеличенный
+            </label>
+            <label>
+              <input type="radio" name="line-height" value="large">
+              Большой
+            </label>
+          </fieldset>
+
+          <p class="focus-note">Подсветка фокуса всегда включена.</p>
+        </form>
+      </div>
+    </aside>
+
+    <header class="site-header">
+      <div class="container">
+        <p class="site-name">MedAccess</p>
+        <p class="site-description">Доступная запись к врачу</p>
+
+        <nav class="main-nav" aria-label="Основная навигация">
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="doctors.html">Запись к врачу</a></li>
+          </ul>
+        </nav>
+
+        <button
+          type="button"
+          class="accessibility-toggle"
+          aria-controls="accessibility-panel"
+          aria-expanded="false"
+          aria-label="Открыть настройки отображения"
+        >
+          <svg
+            class="accessibility-toggle-icon"
+            width="32"
+            height="18"
+            viewBox="0 0 32 18"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="9" cy="9" r="6"></circle>
+            <circle cx="23" cy="9" r="6"></circle>
+            <path d="M15 9h2"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main-content" class="site-main">
+      <section class="screen appointment-screen" aria-labelledby="appointment-title">
+        <div class="container">
+          <h1 id="appointment-title">Оформление записи</h1>
+          <p class="lead">
+            Проверьте выбранного врача и время приема, затем заполните данные пациента.
+          </p>
+
+          <section class="appointment-summary" aria-labelledby="appointment-summary-title">
+            <h2 id="appointment-summary-title">Выбранная запись</h2>
+            <div id="appointment-summary" aria-live="polite">
+              <p>Выберите врача и время приема на странице записи.</p>
+            </div>
+            <a href="doctors.html">Изменить врача или время</a>
+          </section>
+
+          <div
+            id="live-region"
+            class="visually-hidden"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>MedAccess — доступная онлайн-запись к врачу.</p>
+        <a href="#main-content">Вернуться к началу страницы</a>
+      </div>
+    </footer>
+
+    <script src="js/mock-data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

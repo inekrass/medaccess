@@ -123,6 +123,72 @@
             <a href="doctors.html">Изменить врача или время</a>
           </section>
 
+          <section class="patient-section" aria-labelledby="patient-form-title">
+            <h2 id="patient-form-title">Данные пациента</h2>
+            <p id="patient-form-description">
+              Поля с пометкой «обязательно» нужно заполнить перед подтверждением записи.
+            </p>
+
+            <form id="patient-form" novalidate aria-describedby="patient-form-description">
+              <div class="form-field">
+                <label for="patient-name">ФИО пациента, обязательно</label>
+                <input
+                  id="patient-name"
+                  name="patient-name"
+                  type="text"
+                  autocomplete="name"
+                  required
+                  aria-describedby="patient-name-error"
+                >
+                <p id="patient-name-error" class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="patient-phone">Телефон, обязательно</label>
+                <input
+                  id="patient-phone"
+                  name="patient-phone"
+                  type="tel"
+                  autocomplete="tel"
+                  inputmode="tel"
+                  required
+                  aria-describedby="patient-phone-error patient-phone-hint"
+                >
+                <p id="patient-phone-hint" class="field-hint">Например: +7 900 123-45-67.</p>
+                <p id="patient-phone-error" class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="patient-birthdate">Дата рождения, обязательно</label>
+                <input
+                  id="patient-birthdate"
+                  name="patient-birthdate"
+                  type="date"
+                  required
+                  aria-describedby="patient-birthdate-error"
+                >
+                <p id="patient-birthdate-error" class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="patient-comment">Комментарий к записи</label>
+                <textarea
+                  id="patient-comment"
+                  name="patient-comment"
+                  rows="4"
+                  aria-describedby="patient-comment-hint"
+                ></textarea>
+                <p id="patient-comment-hint" class="field-hint">
+                  Можно указать симптомы, ограничения или другую важную информацию.
+                </p>
+              </div>
+
+              <div id="patient-form-errors" class="form-errors" aria-live="assertive"></div>
+
+              <button type="submit">Подтвердить запись</button>
+            </form>
+          </section>
+
           <div
             id="live-region"
             class="visually-hidden"

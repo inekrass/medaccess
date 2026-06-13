@@ -8,6 +8,131 @@ const patientForm = document.querySelector("#patient-form");
 const patientFormErrors = document.querySelector("#patient-form-errors");
 const appointmentResult = document.querySelector("#appointment-result");
 const appointmentStorageKey = "medaccessAppointment";
+const preferencesStorageKey = "medaccessAccessibilityPreferences";
+const defaultAccessibilityPreferences = {
+  fontSize: "normal",
+  lineHeight: "normal",
+  letterSpacing: "normal"
+};
+const accessibilityPreferenceGroups = {
+  fontSize: {
+    name: "font-size",
+    classPrefix: "font-size",
+    values: ["normal", "large", "extra-large"]
+  },
+  lineHeight: {
+    name: "line-height",
+    classPrefix: "line-height",
+    values: ["normal", "increased", "large"]
+  },
+  letterSpacing: {
+    name: "letter-spacing",
+    classPrefix: "letter-spacing",
+    values: ["normal", "increased", "large"]
+  }
+};
+
+function getStoredAccessibilityPreferences() {
+  const storedPreferences = localStorage.getItem(preferencesStorageKey);
+
+  if (!storedPreferences) {
+    return { ...defaultAccessibilityPreferences };
+  }
+
+  try {
+    return normalizeAccessibilityPreferences({
+      ...defaultAccessibilityPreferences,
+      ...JSON.parse(storedPreferences)
+    });
+  } catch {
+    localStorage.removeItem(preferencesStorageKey);
+    return { ...defaultAccessibilityPreferences };
+  }
+}
+
+function normalizeAccessibilityPreferences(preferences) {
+  return Object.entries(accessibilityPreferenceGroups).reduce((result, [group, config]) => {
+    const value = preferences[group];
+
+    result[group] = config.values.includes(value)
+      ? value
+      : defaultAccessibilityPreferences[group];
+
+    return result;
+  }, {});
+}
+
+function saveAccessibilityPreferences(preferences) {
+  localStorage.setItem(preferencesStorageKey, JSON.stringify(preferences));
+}
+
+function applyPreferenceClass(group, value) {
+  const config = accessibilityPreferenceGroups[group];
+
+  if (!config) {
+    return;
+  }
+
+  config.values.forEach((item) => {
+    document.body.classList.remove(`${config.classPrefix}-${item}`);
+  });
+  document.body.classList.add(`${config.classPrefix}-${value}`);
+}
+
+function syncAccessibilityControls(preferences) {
+  Object.entries(accessibilityPreferenceGroups).forEach(([group, config]) => {
+    const checkedControl = document.querySelector(
+      `input[name="${config.name}"][value="${preferences[group]}"]`
+    );
+
+    if (checkedControl) {
+      checkedControl.checked = true;
+    }
+  });
+}
+
+function applyAccessibilityPreferences(preferences) {
+  Object.keys(accessibilityPreferenceGroups).forEach((group) => {
+    applyPreferenceClass(group, preferences[group]);
+  });
+  syncAccessibilityControls(preferences);
+}
+
+function initAccessibilityPreferences() {
+  if (!accessibilityPanel) {
+    applyAccessibilityPreferences(getStoredAccessibilityPreferences());
+    return;
+  }
+
+  const preferences = normalizeAccessibilityPreferences(getStoredAccessibilityPreferences());
+
+  applyAccessibilityPreferences(preferences);
+
+  accessibilityPanel.addEventListener("change", (event) => {
+    const target = event.target;
+
+    if (!(target instanceof HTMLInputElement) || target.type !== "radio") {
+      return;
+    }
+
+    const preferenceEntry = Object.entries(accessibilityPreferenceGroups)
+      .find(([, config]) => config.name === target.name);
+
+    if (!preferenceEntry) {
+      return;
+    }
+
+    const [group] = preferenceEntry;
+    const nextPreferences = normalizeAccessibilityPreferences({
+      ...getStoredAccessibilityPreferences(),
+      [group]: target.value
+    });
+
+    applyAccessibilityPreferences(nextPreferences);
+    saveAccessibilityPreferences(nextPreferences);
+    setLiveMessage("Настройки отображения сохранены.");
+  });
+}
 
 function setLiveMessage(message) {
   if (!liveRegion) {
@@ -16,6 +141,8 @@ function setLiveMessage(message) {
 
   liveRegion.textContent = message;
 }
+
+initAccessibilityPreferences();
 
 function openAccessibilityPanel() {
   if (!accessibilityPanel || !accessibilityToggle) {

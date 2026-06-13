@@ -10,6 +10,42 @@
   border: 0;
 }
 
+body.font-size-normal {
+  font-size: 100%;
+}
+
+body.font-size-large {
+  font-size: 120%;
+}
+
+body.font-size-extra-large {
+  font-size: 140%;
+}
+
+body.line-height-normal {
+  line-height: 1.5;
+}
+
+body.line-height-increased {
+  line-height: 1.8;
+}
+
+body.line-height-large {
+  line-height: 2;
+}
+
+body.letter-spacing-normal {
+  letter-spacing: normal;
+}
+
+body.letter-spacing-increased {
+  letter-spacing: 0.04em;
+}
+
+body.letter-spacing-large {
+  letter-spacing: 0.08em;
+}
+
 .accessibility-toggle {
   display: inline-flex;
   align-items: center;

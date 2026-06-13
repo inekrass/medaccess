@@ -4,6 +4,9 @@ const liveRegion = document.querySelector("#live-region");
 const doctorsList = document.querySelector("#doctors-list");
 const specialtyFilter = document.querySelector("#specialty-filter");
 const appointmentSummary = document.querySelector("#appointment-summary");
+const patientForm = document.querySelector("#patient-form");
+const patientFormErrors = document.querySelector("#patient-form-errors");
+const appointmentResult = document.querySelector("#appointment-result");
 const appointmentStorageKey = "medaccessAppointment";
 
 function setLiveMessage(message) {
@@ -65,15 +68,20 @@ if (accessibilityToggle && accessibilityPanel) {
 
 function formatSlot(slot) {
   const [datePart, timePart] = slot.split(" ");
+  const formattedDate = formatDate(datePart);
+
+  return `${formattedDate}, ${timePart}`;
+}
+
+function formatDate(datePart) {
   const [year, month, day] = datePart.split("-");
   const date = new Date(Number(year), Number(month) - 1, Number(day));
-  const formattedDate = new Intl.DateTimeFormat("ru-RU", {
+
+  return new Intl.DateTimeFormat("ru-RU", {
     day: "numeric",
     month: "long",
     year: "numeric"
   }).format(date);
-
-  return `${formattedDate}, ${timePart}`;
 }
 
 function createParagraph(label, value) {
@@ -277,3 +285,196 @@ function renderAppointmentSummary() {
 }
 
 renderAppointmentSummary();
+
+function setFieldError(field, message) {
+  const errorElement = document.querySelector(`#${field.id}-error`);
+
+  field.setAttribute("aria-invalid", message ? "true" : "false");
+
+  if (errorElement) {
+    errorElement.textContent = message;
+  }
+}
+
+function clearPatientFormErrors() {
+  if (!patientForm) {
+    return;
+  }
+
+  patientForm.querySelectorAll("input, textarea").forEach((field) => {
+    field.removeAttribute("aria-invalid");
+  });
+
+  patientForm.querySelectorAll(".field-error").forEach((errorElement) => {
+    errorElement.textContent = "";
+  });
+
+  if (patientFormErrors) {
+    patientFormErrors.textContent = "";
+  }
+
+  if (appointmentResult) {
+    appointmentResult.textContent = "";
+  }
+}
+
+function validatePatientForm() {
+  const errors = [];
+
+  if (!patientForm) {
+    return errors;
+  }
+
+  const patientName = patientForm.elements["patient-name"];
+  const patientPhone = patientForm.elements["patient-phone"];
+  const patientBirthdate = patientForm.elements["patient-birthdate"];
+  const phonePattern = /^\+?[0-9\s\-()]{10,20}$/;
+
+  clearPatientFormErrors();
+
+  if (!patientName.value.trim()) {
+    errors.push({
+      field: patientName,
+      message: "Введите ФИО пациента."
+    });
+  }
+
+  if (!patientPhone.value.trim()) {
+    errors.push({
+      field: patientPhone,
+      message: "Введите телефон для связи."
+    });
+  } else if (!phonePattern.test(patientPhone.value.trim())) {
+    errors.push({
+      field: patientPhone,
+      message: "Введите телефон в понятном формате, например +7 900 123-45-67."
+    });
+  }
+
+  if (!patientBirthdate.value) {
+    errors.push({
+      field: patientBirthdate,
+      message: "Укажите дату рождения пациента."
+    });
+  }
+
+  errors.forEach((error) => {
+    setFieldError(error.field, error.message);
+  });
+
+  return errors;
+}
+
+function renderPatientFormErrors(errors) {
+  if (!patientFormErrors) {
+    return;
+  }
+
+  patientFormErrors.innerHTML = "";
+
+  if (errors.length === 0) {
+    return;
+  }
+
+  const title = document.createElement("p");
+  const list = document.createElement("ul");
+
+  title.textContent = "Проверьте поля формы:";
+
+  errors.forEach((error) => {
+    const item = document.createElement("li");
+    const link = document.createElement("a");
+
+    link.href = `#${error.field.id}`;
+    link.textContent = error.message;
+    item.append(link);
+    list.append(item);
+  });
+
+  patientFormErrors.append(title, list);
+}
+
+function getSavedAppointment() {
+  const savedAppointment = sessionStorage.getItem(appointmentStorageKey);
+
+  if (!savedAppointment) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(savedAppointment);
+  } catch {
+    sessionStorage.removeItem(appointmentStorageKey);
+    return null;
+  }
+}
+
+function confirmAppointment() {
+  if (!patientForm || !appointmentResult) {
+    return;
+  }
+
+  const appointment = getSavedAppointment();
+
+  if (!appointment) {
+    appointmentResult.textContent = "Сначала выберите врача и время приема.";
+    setLiveMessage("Сначала выберите врача и время приема.");
+    return;
+  }
+
+  const patientName = patientForm.elements["patient-name"].value.trim();
+  const patientPhone = patientForm.elements["patient-phone"].value.trim();
+  const patientBirthdate = patientForm.elements["patient-birthdate"].value;
+  const patientComment = patientForm.elements["patient-comment"].value.trim();
+
+  appointmentResult.innerHTML = "";
+
+  const title = document.createElement("h2");
+  const summary = document.createElement("dl");
+
+  title.textContent = "Запись подтверждена";
+
+  [
+    ["Пациент", patientName],
+    ["Телефон", patientPhone],
+    ["Дата рождения", formatDate(patientBirthdate)],
+    ["Комментарий", patientComment || "Не указан"],
+    ["Врач", appointment.doctorName],
+    ["Кабинет", appointment.room],
+    ["Дата и время", formatSlot(appointment.slot)]
+  ].forEach(([termText, descriptionText]) => {
+    const term = document.createElement("dt");
+    const description = document.createElement("dd");
+
+    term.textContent = termText;
+    description.textContent = descriptionText;
+    summary.append(term, description);
+  });
+
+  appointmentResult.append(title, summary);
+  setLiveMessage(`Запись подтверждена. Врач: ${appointment.doctorName}. Время: ${formatSlot(appointment.slot)}.`);
+}
+
+function initPatientForm() {
+  if (!patientForm) {
+    return;
+  }
+
+  patientForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const errors = validatePatientForm();
+
+    renderPatientFormErrors(errors);
+
+    if (errors.length > 0) {
+      errors[0].field.focus();
+      setLiveMessage(`Форма содержит ошибки: ${errors.length}.`);
+      return;
+    }
+
+    confirmAppointment();
+  });
+}
+
+initPatientForm();
